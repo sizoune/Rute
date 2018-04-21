@@ -48,7 +48,21 @@ public class TestAdapter {
 
     public Cursor getAllRoomData() {
         try {
-            String sql = "SELECT * FROM room WHERE floor = '1' AND building_ID = 'IF-1'";
+            String sql = "SELECT * FROM room ";
+            Cursor mCur = mDb.rawQuery(sql, null);
+            if (mCur != null) {
+                mCur.moveToNext();
+            }
+            return mCur;
+        } catch (SQLException mSQLException) {
+            Log.e(TAG, "getTestData >>" + mSQLException.toString());
+            throw mSQLException;
+        }
+    }
+
+    public Cursor getRoombyFloor(String lantai) {
+        try {
+            String sql = "SELECT * FROM room WHERE floor = '" + lantai + "'";
             Cursor mCur = mDb.rawQuery(sql, null);
             if (mCur != null) {
                 mCur.moveToNext();
@@ -62,7 +76,7 @@ public class TestAdapter {
 
     public Cursor getAllCorridoreData() {
         try {
-            String sql = "SELECT * FROM corridor WHERE Z = '1'";
+            String sql = "SELECT * FROM corridor";
             Cursor mCur = mDb.rawQuery(sql, null);
             if (mCur != null) {
                 mCur.moveToNext();

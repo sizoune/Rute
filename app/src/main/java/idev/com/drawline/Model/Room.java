@@ -6,13 +6,18 @@
 package idev.com.drawline.Model;
 
 
-public class Room {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.io.Serializable;
+
+public class Room implements Parcelable {
 
     private String room_code;
     private String room_name;
     private String type;
     private Double x;
-    private Double y; 
+    private Double y;
     private Double z;
     private Double lati;
     private Double longi;
@@ -28,9 +33,52 @@ public class Room {
         this.z = z;
         this.latitude = lati;
         this.longitude = longi;
-        this.lati = latitude.getDegree() + latitude.getMinute() / 60 + latitude.getSecond() / 3600;
-        this.longi = longitude.getDegree() + longitude.getMinute() / 60 + longitude.getSecond() / 3600;
+        this.lati = latitude.getDegree() + ((latitude.getMinute() * 60 + latitude.getSecond()) / 3600);
+        this.longi = longitude.getDegree() + ((longitude.getMinute() * 60 + longitude.getSecond()) / 3600);
     }
+
+    protected Room(Parcel in) {
+        room_code = in.readString();
+        room_name = in.readString();
+        type = in.readString();
+        if (in.readByte() == 0) {
+            x = null;
+        } else {
+            x = in.readDouble();
+        }
+        if (in.readByte() == 0) {
+            y = null;
+        } else {
+            y = in.readDouble();
+        }
+        if (in.readByte() == 0) {
+            z = null;
+        } else {
+            z = in.readDouble();
+        }
+        if (in.readByte() == 0) {
+            lati = null;
+        } else {
+            lati = in.readDouble();
+        }
+        if (in.readByte() == 0) {
+            longi = null;
+        } else {
+            longi = in.readDouble();
+        }
+    }
+
+    public static final Creator<Room> CREATOR = new Creator<Room>() {
+        @Override
+        public Room createFromParcel(Parcel in) {
+            return new Room(in);
+        }
+
+        @Override
+        public Room[] newArray(int size) {
+            return new Room[size];
+        }
+    };
 
     public String getType() {
         return type;
@@ -113,5 +161,47 @@ public class Room {
 
     public void setLongitude(Longitude longitude) {
         this.longitude = longitude;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(room_code);
+        parcel.writeString(room_name);
+        parcel.writeString(type);
+        if (x == null) {
+            parcel.writeByte((byte) 0);
+        } else {
+            parcel.writeByte((byte) 1);
+            parcel.writeDouble(x);
+        }
+        if (y == null) {
+            parcel.writeByte((byte) 0);
+        } else {
+            parcel.writeByte((byte) 1);
+            parcel.writeDouble(y);
+        }
+        if (z == null) {
+            parcel.writeByte((byte) 0);
+        } else {
+            parcel.writeByte((byte) 1);
+            parcel.writeDouble(z);
+        }
+        if (lati == null) {
+            parcel.writeByte((byte) 0);
+        } else {
+            parcel.writeByte((byte) 1);
+            parcel.writeDouble(lati);
+        }
+        if (longi == null) {
+            parcel.writeByte((byte) 0);
+        } else {
+            parcel.writeByte((byte) 1);
+            parcel.writeDouble(longi);
+        }
     }
 }
